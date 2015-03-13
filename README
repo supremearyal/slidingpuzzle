@@ -1,0 +1,90 @@
+The first release for my sliding puzzle program written
+in C with SDL. Currently, the code is messy but the program
+does work.
+
+---------
+Compiling
+---------
+	+ Make an executable using make in the extracted directory
+	  of the contents of the archive.
+
+-----------
+LIMITATIONS
+-----------
+	+ The program's input only supports BMP files. This can be easily
+	  changed to support more formats in the future using the SDL_image
+	  library.
+
+	+ The program only takes in dimensions that are divisible with respect
+	  to height and width, i.e. <image_width> modulo <columns> must be 0
+	  <image_height> modulo <rows> must be 0 as well. This is because
+	  I haven't looked up on image resizing algorithms.
+
+	+ The shuffling mechanism is very poor right now. Randomly selected
+	  moves in the top, bottom, left, and right directions are repeatedly
+	  applied to the array representing the pieces. The number of these
+	  random movements are determined by the number of rows and columns.
+	  The following determines the number of random movements.
+
+	  	If <rows> > <cols>
+			<number_of_shuffles> = 2 * (<rows> * <cols> * <rows> + 100)
+		Else
+			<number_of_shuffles> = 2 * (<cols> * <rows> * <cols> + 100)
+
+	  Although impractical, since the iterations required for a square
+	  puzzle of n by n is in the order of O(n^3), creating large puzzles
+	  is very slow. In my Pentium D (1.6 GHz), a 400 by 400 puzzle takes
+	  about 13 seconds to display. I think I am having too many
+	  random movements. Furthermore, many of the random movements where
+	  the empty tile is outside aren't utilized since they may not move
+	  in certain directions. In addition, a Windows binary that I tested
+	  wasn't having very good results with shuffling in large puzzles.
+
+-------------------------------
+FURTHER IMPROVEMENTS TO BE MADE
+-------------------------------
+Aside from getting rid of the previous limitations, the following are
+slightly less urgent improvements.
+
+	+ The method for reflection below the puzzle creates the transparency
+	  overlay every time the screen needs to be redrawn. This can be
+	  built into game_data struct so the overlay is only created once
+	  in the init_game method.
+
+	+ Similarly, the actual reflected tiles are allocated and freed upon
+	  every reflect call. This is unnecessary and the tile can be
+	  created once during init_game, so only one SDL_CreateRGBSurface
+	  call is needed. One SDL_Surface can be used throughout the program's
+	  execution; the pixels are simply refilled.
+
+	+ Some kind of scoring system.
+
+	+ Finding a better way to shows the number of moves the user has
+	  had in solving the puzzle.
+
+	+ Making the program user-friendly.
+
+	+ Using a GUI so that an image may be loaded by the user without having
+	  to run the program again. Furthermore, the shuffle and reset buttons
+	  's' and 'r' can also be better represented with a GUI.
+
+-------
+RUNNING
+-------
+	+ The usage for the program is (if installed system-wide):
+		puzzle <filename> <rows> <cols>
+	  or
+	  	./puzzle <filename> <rows> <cols>
+	  if running from the same directory.
+
+	+ The included images flower.bmp, image.bmp, and numbers.bmp
+	  can be used. flower.bmp and image.bmp are both public domain
+	  images and I created numbers.bmp.
+
+The tiles in the puzzle can be slided by clicking the tile one wants to move. For every move, the titlebar's count increments by one. When won,
+the titlebar displays won along with the number of moves taken to solve
+the puzzle. Press 'r' to reset the puzzle to see what it looks like upon
+being solved and 's' to shuffle.
+
+--
+Supreme Aryal
